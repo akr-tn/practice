@@ -1,18 +1,32 @@
-import { Header } from "./Header";
-import { Nav } from "./Nav";
-import { Main } from "./Main";
-import { Footer } from "./Footer";
+import React, { Suspense, lazy, useEffect } from "react";
+import Loading from "./components/Loading";
+import Lenis from "@studio-freight/lenis";
 
-function App() {
+const Header = lazy(() => import("./components/Header"));
+const AppRoutes = lazy(() => import("./routes/AppRoutes"));
+const Footer = lazy(() => import("./components/Footer"));
+
+const App = () => {
+  useEffect(() => {
+    const lenis = new Lenis();
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+  }, []);
+
   return (
-    <div className="app-container">
-      <Header />
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9vTQQKswoaJXT5OQWWVtvyH9GKBoKlxMk1g&s" />
-      <Nav />
-      <Main />
-      <Footer />
-    </div>
+    <>
+      <Suspense fallback={<Loading />}>
+        <Header />
+        <AppRoutes />
+        <Footer />
+      </Suspense>
+    </>
   );
-}
+};
 
 export default App;
